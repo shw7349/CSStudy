@@ -1,0 +1,15 @@
+# Claude 설정
+.claude/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# macOS
+.DS_Store
+*.swp
+
+# Python
+__pycache__/
+*.py[cod]

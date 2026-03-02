@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 학습 & 면접 대비 문제은행</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;
+            font-size: 20px;
+            line-height: 1.8;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* 검색 영역 */
+        .search-container {
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 15px 25px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .search-btn {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .search-results {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-result-item:hover {
+            background: #f5f7ff;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-category {
+            font-size: 0.9rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            white-space: nowrap;
+        }
+
+        .result-text {
+            flex: 1;
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .result-preview {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+
+        .search-stats {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .nav-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .nav-card h2 {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .nav-card p {
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .nav-card .count {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            display: none;
+        }
+
+        .content-area.active {
+            display: block;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #markdown-content {
+            font-size: 1.1rem;
+        }
+
+        #markdown-content h1 {
+            font-size: 2.2rem;
+            color: #333;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+
+        #markdown-content h2 {
+            font-size: 1.8rem;
+            color: #444;
+            margin-top: 50px;
+            margin-bottom: 25px;
+            padding-left: 15px;
+            border-left: 5px solid #667eea;
+        }
+
+        #markdown-content h3 {
+            font-size: 1.5rem;
+            color: #555;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+            padding: 15px 20px;
+            border-radius: 10px;
+        }
+
+        #markdown-content h4 {
+            font-size: 1.2rem;
+            color: #667eea;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+
+        #markdown-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        #markdown-content ul, #markdown-content ol {
+            margin-left: 30px;
+            margin-bottom: 20px;
+        }
+
+        #markdown-content li {
+            margin-bottom: 10px;
+        }
+
+        #markdown-content code {
+            background: #f5f5f5;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95em;
+        }
+
+        #markdown-content pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        #markdown-content pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+        }
+
+        #markdown-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 20px 0;
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            padding: 15px 20px;
+            border-radius: 0 10px 10px 0;
+        }
+
+        #markdown-content strong {
+            color: #333;
+        }
+
+        #markdown-content hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            margin: 40px 0;
+            border-radius: 2px;
+        }
+
+        #markdown-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        #markdown-content th, #markdown-content td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        #markdown-content th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        #markdown-content tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 3px solid #667eea;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 15px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .font-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            background: white;
+            padding: 10px;
+            border-radius: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .font-btn {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .font-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 100px;
+            right: 40px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .scroll-top.visible {
+            opacity: 1;
+        }
+
+        .scroll-top:hover {
+            transform: scale(1.1);
+        }
+
+        .search-highlight {
+            background: #ffeb3b;
+            padding: 2px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 18px;
+            }
+
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 20px 15px;
+            }
+
+            .content-area {
+                padding: 25px;
+            }
+
+            .nav-card {
+                padding: 20px;
+            }
+
+            .font-controls {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-input {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 CS 학습 & 면접 대비 문제은행</h1>
+            <p>1년차 ~ 10년차 개발자를 위한 600+ 문제</p>
+        </header>
+
+        <!-- 검색 영역 -->
+        <div class="search-container" id="search-container">
+            <div class="search-box">
+                <input type="text"
+                       class="search-input"
+                       id="searchInput"
+                       placeholder="검색어를 입력하세요 (예: 트랜잭션, TCP, 프로세스...)"
+                       onkeypress="if(event.key==='Enter') performSearch()">
+                <button class="search-btn" onclick="performSearch()">🔍 검색</button>
+            </div>
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <div id="nav-area">
+            <div class="nav-grid">
+                <div class="nav-card" onclick="loadContent('data-structure.md')">
+                    <div class="icon">🗂️</div>
+                    <h2>자료구조</h2>
+                    <p>배열, 리스트, 트리, 그래프 등 기본 자료구조</p>
+                    <span class="count">80문제</span>
+                </div>
+
+                <div class="nav-card" onclick="loadContent('algorithm.md')">
+                    <div class="icon">⚡</div>
+                    <h2>알고리즘</h2>
+                    <p>정렬, 탐색, 동적 프로그래밍, 그리디</p>
+                    <span class="count">80문제</span>
+                </div>
+
+                <div class="nav-card" onclick="loadContent('operating-system.md')">
+                    <div class="icon">💻</div>
+                    <h2>운영체제</h2>
+                    <p>프로세스, 메모리, 스케줄링, 동기화</p>
+                    <span class="count">100문제</span>
+                </div>
+
+                <div class="nav-card" onclick="loadContent('network.md')">
+                    <div class="icon">🌐</div>
+                    <h2>네트워크</h2>
+                    <p>OSI 7계층, TCP/IP, HTTP, 보안</p>
+                    <span class="count">100문제</span>
+                </div>
+
+                <div class="nav-card" onclick="loadContent('database.md')">
+                    <div class="icon">🗄️</div>
+                    <h2>데이터베이스</h2>
+                    <p>SQL, 인덱스, 트랜잭션, 최적화</p>
+                    <span class="count">120문제</span>
+                </div>
+
+                <div class="nav-card" onclick="loadContent('software-engineering.md')">
+                    <div class="icon">🛠️</div>
+                    <h2>소프트웨어 공학</h2>
+                    <p>설계 패턴, 아키텍처, DevOps, 테스트</p>
+                    <span class="count">120문제</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="content-area" class="content-area">
+            <button class="back-btn" onclick="showNav()">
+                ← 목록으로 돌아가기
+            </button>
+            <div id="markdown-content"></div>
+        </div>
+    </div>
+
+    <div class="font-controls">
+        <button class="font-btn" onclick="changeFontSize(-2)" title="글자 작게">A-</button>
+        <button class="font-btn" onclick="changeFontSize(2)" title="글자 크게">A+</button>
+    </div>
+
+    <button class="scroll-top" id="scrollTop" onclick="scrollToTop()">↑</button>
+
+    <script>
+        let currentFontSize = 20;
+        let allContent = {};
+        let searchIndex = [];
+
+        const files = [
+            { name: 'data-structure.md', category: '자료구조', icon: '🗂️' },
+            { name: 'algorithm.md', category: '알고리즘', icon: '⚡' },
+            { name: 'operating-system.md', category: '운영체제', icon: '💻' },
+            { name: 'network.md', category: '네트워크', icon: '🌐' },
+            { name: 'database.md', category: '데이터베이스', icon: '🗄️' },
+            { name: 'software-engineering.md', category: '소프트웨어 공학', icon: '🛠️' }
+        ];
+
+        // 페이지 로드 시 모든 파일 인덱싱
+        window.onload = function() {
+            loadAllFiles();
+        };
+
+        async function loadAllFiles() {
+            for (const file of files) {
+                try {
+                    const response = await fetch(file.name);
+                    if (response.ok) {
+                        const text = await response.text();
+                        allContent[file.name] = text;
+                        indexContent(file.name, file.category, file.icon, text);
+                    }
+                } catch (e) {
+                    console.log(`Could not load ${file.name}`);
+                }
+            }
+        }
+
+        function indexContent(filename, category, icon, text) {
+            // 질문들을 파싱
+            const questions = text.split(/(?=### Q\d+\.)/);
+
+            for (const q of questions) {
+                if (!q.trim()) continue;
+
+                // 질문 제목 추출
+                const titleMatch = q.match(/### (Q\d+\..+?)(?:\n|$)/);
+                if (!titleMatch) continue;
+
+                const title = titleMatch[1].trim();
+
+                // 핵심 요약 추출
+                const summaryMatch = q.match(/#### A\. 핵심 요약\n([^\n]+)/);
+                const summary = summaryMatch ? summaryMatch[1].trim() : '';
+
+                // 전체 내용 (검색용)
+                const content = q.replace(/[#\-\*]/g, ' ').toLowerCase();
+
+                searchIndex.push({
+                    filename,
+                    category,
+                    icon,
+                    title,
+                    summary,
+                    content,
+                    originalContent: q
+                });
+            }
+        }
+
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (!query) {
+                resultsContainer.classList.remove('active');
+                return;
+            }
+
+            const results = searchIndex.filter(item =>
+                item.title.toLowerCase().includes(query) ||
+                item.summary.toLowerCase().includes(query) ||
+                item.content.includes(query)
+            );
+
+            displayResults(results, query);
+        }
+
+        function displayResults(results, query) {
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = `
+                    <div class="no-results">
+                        <p>🔍 "${query}"에 대한 검색 결과가 없습니다.</p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">다른 키워드로 검색해 보세요.</p>
+                    </div>
+                `;
+                resultsContainer.classList.add('active');
+                return;
+            }
+
+            let html = `<div class="search-stats">총 ${results.length}개의 결과를 찾았습니다.</div>`;
+
+            for (const result of results) {
+                const highlightedTitle = highlightText(result.title, query);
+                const highlightedSummary = highlightText(result.summary, query);
+
+                html += `
+                    <div class="search-result-item" onclick="goToResult('${result.filename}', '${escapeQuotes(result.title)}')">
+                        <span class="result-category">${result.icon} ${result.category}</span>
+                        <div class="result-text">
+                            <div class="result-title">${highlightedTitle}</div>
+                            <div class="result-preview">${highlightedSummary}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            resultsContainer.innerHTML = html;
+            resultsContainer.classList.add('active');
+        }
+
+        function highlightText(text, query) {
+            if (!query) return text;
+            const regex = new RegExp(`(${escapeRegex(query)})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function escapeRegex(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function escapeQuotes(str) {
+            return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        function goToResult(filename, title) {
+            loadContent(filename, title);
+            document.getElementById('searchResults').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+        }
+
+        function loadContent(filename, searchTitle = null) {
+            const navArea = document.getElementById('nav-area');
+            const contentArea = document.getElementById('content-area');
+            const markdownContent = document.getElementById('markdown-content');
+            const searchContainer = document.getElementById('search-container');
+
+            navArea.style.display = 'none';
+            searchContainer.style.display = 'none';
+            contentArea.classList.add('active');
+            markdownContent.innerHTML = '<div class="loading">로딩 중</div>';
+
+            // 이미 로드된 콘텐츠가 있으면 사용
+            if (allContent[filename]) {
+                renderContent(allContent[filename], searchTitle);
+                return;
+            }
+
+            fetch(filename)
+                .then(response => {
+                    if (!response.ok) throw new Error('File not found');
+                    return response.text();
+                })
+                .then(text => {
+                    allContent[filename] = text;
+                    renderContent(text, searchTitle);
+                })
+                .catch(error => {
+                    markdownContent.innerHTML = `
+                        <div style="text-align: center; padding: 50px;">
+                            <p style="color: #e74c3c; font-size: 1.2rem;">
+                                파일을 불러올 수 없습니다: ${filename}
+                            </p>
+                            <p style="color: #666; margin-top: 20px;">
+                                로컬 서버를 실행 중인지 확인하세요.<br>
+                                터미널에서: <code>python3 -m http.server 8000</code>
+                            </p>
+                        </div>
+                    `;
+                });
+        }
+
+        function renderContent(text, searchTitle) {
+            const markdownContent = document.getElementById('markdown-content');
+            markdownContent.innerHTML = marked.parse(text);
+
+            if (searchTitle) {
+                // 검색한 질문으로 스크롤
+                setTimeout(() => {
+                    const headings = markdownContent.querySelectorAll('h3');
+                    for (const h of headings) {
+                        if (h.textContent.includes(searchTitle.replace(/^Q\d+\.\s*/, ''))) {
+                            h.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            h.style.background = 'linear-gradient(135deg, #fff3cd 0%, #ffe69c 100%)';
+                            setTimeout(() => {
+                                h.style.background = '';
+                            }, 3000);
+                            break;
+                        }
+                    }
+                }, 100);
+            } else {
+                window.scrollTo(0, 0);
+            }
+        }
+
+        function showNav() {
+            document.getElementById('nav-area').style.display = 'block';
+            document.getElementById('search-container').style.display = 'block';
+            document.getElementById('content-area').classList.remove('active');
+            window.scrollTo(0, 0);
+        }
+
+        function changeFontSize(delta) {
+            currentFontSize = Math.max(14, Math.min(32, currentFontSize + delta));
+            document.body.style.fontSize = currentFontSize + 'px';
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollBtn = document.getElementById('scrollTop');
+            if (window.scrollY > 300) {
+                scrollBtn.classList.add('visible');
+            } else {
+                scrollBtn.classList.remove('visible');
+            }
+        });
+
+        // 실시간 검색 (타이핑 중)
+        document.getElementById('searchInput').addEventListener('input', function() {
+            if (this.value.length >= 2) {
+                performSearch();
+            } else {
+                document.getElementById('searchResults').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
