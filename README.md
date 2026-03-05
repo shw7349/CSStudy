@@ -14,6 +14,7 @@
 | 🌐 **네트워크** | 100문제 | **[📄 문제 보기](./network.md)** |
 | 🗄️ **데이터베이스** | 120문제 | **[📄 문제 보기](./database.md)** |
 | 🛠️ **소프트웨어 공학** | 120문제 | **[📄 문제 보기](./software-engineering.md)** |
+| 🎯 **면접 암기 노트** | 핵심 정리 | **[📄 암기 보기](./memorization.md)** |
 
 ---
 
@@ -53,6 +54,12 @@
 
 ### 🛠️ [소프트웨어 공학 (120문제)](./software-engineering.md)
 > 설계 패턴, 아키텍처, DevOps, CI/CD, 테스트, 애자일
+
+### 🎯 [면접 암기 노트 (핵심 정리)](./memorization.md)
+> **데이터베이스 & 운영체제 중심 면접 필수 암기 사항**
+> - ACID, 격리 수준, 인덱스, CAP 정리, 캐시 문제 패턴
+> - 프로세스 vs 스레드, 동기화, 메모리 관리, GC, 동시성 문제
+> - 면접 빈출 비교 질문, 1분/3분 답변 템플릿
 
 ---
 
@@ -159,7 +166,8 @@ CSStudy/
 ├── operating-system.md       # 운영체제 (100문제)
 ├── network.md                # 네트워크 (100문제)
 ├── database.md               # 데이터베이스 (120문제)
-└── software-engineering.md   # 소프트웨어 공학 (120문제)
+├── software-engineering.md   # 소프트웨어 공학 (120문제)
+└── memorization.md           # 면접 암기 노트 (DB & OS 핵심)
 ```
 
 ---
