@@ -52,6 +52,73 @@
 - **대역폭(Bandwidth)**: 단위 시간당 전송할 수 있는 데이터량
 - **지연시간(Latency)**: 데이터 전송에 걸리는 시간
 
+### 🎯 시니어급 고급 용어
+
+#### TCP 고급 메커니즘
+- **TCP Fast Open(TFO)**: 3-Way Handshake 중에 데이터를 함께 전송하여 지연 시간 단축
+- **TCP Keepalive**: 유휴 연결이 살아있는지 주기적으로 확인하는 메커니즘
+- **Nagle 알고리즘**: 작은 패킷들을 모아서 전송하여 네트워크 효율 향상
+- **Delayed ACK**: ACK를 즉시 보내지 않고 지연시켜 ACK 패킷 수를 줄이는 기법
+- **Selective ACK(SACK)**: 누락된 특정 세그먼트만 재전송하도록 하는 TCP 확장
+- **Window Scaling**: TCP 윈도우 크기를 64KB 이상으로 확장하는 옵션 (고속 네트워크)
+- **TIME_WAIT**: TCP 연결 종료 후 일정 시간 대기하여 지연된 패킷 처리
+
+#### 혼잡 제어(Congestion Control)
+- **AIMD(Additive Increase Multiplicative Decrease)**: 혼잡 윈도우를 선형 증가, 지수 감소시키는 방식
+- **Slow Start**: 연결 초기에 혼잡 윈도우를 지수적으로 증가
+- **Congestion Avoidance**: 혼잡 임계값 도달 후 선형적으로 증가
+- **Fast Retransmit**: 3개의 중복 ACK 수신 시 타임아웃 전에 재전송
+- **Fast Recovery**: 패킷 손실 후 Slow Start 대신 혼잡 회피 단계로 진입
+- **CUBIC**: Linux 기본 혼잡 제어 알고리즘. 대역폭-지연 곱이 큰 네트워크에 최적화
+- **BBR(Bottleneck Bandwidth and RTT)**: Google이 개발한 최신 혼잡 제어 알고리즘
+
+#### HTTP 고급
+- **HTTP/2**: 멀티플렉싱, 서버 푸시, 헤더 압축(HPACK) 지원
+- **HTTP/3**: QUIC 프로토콜 기반. UDP 위에서 동작하며 연결 수립이 빠름
+- **QUIC**: UDP 기반의 전송 프로토콜. 0-RTT 연결, 멀티플렉싱, 암호화 내장
+- **Server-Sent Events(SSE)**: 서버가 클라이언트에게 단방향 실시간 이벤트 전송
+- **WebSocket**: 양방향 실시간 통신을 위한 프로토콜 (HTTP 업그레이드)
+
+#### 라우팅 프로토콜
+- **BGP(Border Gateway Protocol)**: 인터넷의 AS(자율 시스템) 간 라우팅 프로토콜
+- **OSPF(Open Shortest Path First)**: 링크 상태 기반 동적 라우팅 프로토콜
+- **RIP(Routing Information Protocol)**: 거리 벡터 기반 라우팅 (최대 15홉)
+- **Anycast**: 가장 가까운 서버로 라우팅되는 주소 지정 방식 (DNS, CDN에 사용)
+- **Multicast**: 하나의 송신자가 특정 그룹에게만 데이터 전송
+
+#### 네트워크 가상화
+- **VLAN(Virtual LAN)**: 물리적 네트워크를 논리적으로 분할 (2계층)
+- **VXLAN(Virtual Extensible LAN)**: VLAN을 확장한 오버레이 네트워크 (최대 1600만 개)
+- **Overlay Network**: 기존 네트워크 위에 구축된 가상 네트워크
+- **Underlay Network**: Overlay를 지원하는 물리적 네트워크 인프라
+- **SDN(Software-Defined Networking)**: 네트워크 제어를 소프트웨어로 중앙 집중화
+- **NFV(Network Functions Virtualization)**: 네트워크 기능을 가상화하여 범용 하드웨어에서 실행
+
+#### 패킷 분석 & 성능
+- **MTU(Maximum Transmission Unit)**: 한 번에 전송할 수 있는 최대 패킷 크기 (일반적으로 1500B)
+- **MSS(Maximum Segment Size)**: TCP 세그먼트의 최대 데이터 크기 (MTU - IP헤더 - TCP헤더)
+- **Path MTU Discovery**: 경로상 최소 MTU를 찾아 단편화를 방지
+- **Fragmentation**: IP 패킷이 MTU를 초과할 때 작은 조각으로 분할
+- **Jumbo Frame**: 표준 이더넷보다 큰 프레임 (최대 9000B). 데이터센터에서 성능 향상
+- **TTL(Time To Live)**: 패킷이 라우터를 통과할 때마다 감소. 0이 되면 폐기 (무한 루프 방지)
+- **RTT(Round-Trip Time)**: 패킷이 목적지까지 갔다가 돌아오는 시간
+
+#### 보안 & 공격
+- **SYN Flood**: SYN 패킷만 대량 전송하여 서버 자원 고갈시키는 DDoS 공격
+- **ARP Spoofing**: MAC 주소를 속여 트래픽을 가로채는 공격
+- **DNS Amplification**: DNS 응답을 증폭시켜 대상에게 트래픽을 집중시키는 DDoS 공격
+- **Man-in-the-Middle(MITM)**: 통신 중간에서 데이터를 가로채거나 조작
+- **TLS/SSL Handshake**: 암호화 통신을 위한 인증서 교환 및 키 협상 과정
+- **Zero Trust Network**: 모든 네트워크 트래픽을 신뢰하지 않고 검증하는 보안 모델
+
+#### 대규모 시스템 네트워킹
+- **Connection Pooling**: 연결을 재사용하여 핸드셰이크 오버헤드 제거
+- **Keep-Alive**: HTTP 연결을 유지하여 여러 요청을 재사용
+- **L4/L7 로드 밸런싱**: 전송 계층(포트) vs 응용 계층(URL) 기반 부하 분산
+- **Direct Server Return(DSR)**: 응답을 로드 밸런서를 거치지 않고 클라이언트에 직접 전송
+- **Health Check**: 백엔드 서버의 상태를 주기적으로 확인하여 장애 서버 제외
+- **Graceful Degradation**: 네트워크 장애 시 서비스 수준을 단계적으로 낮춤
+
 ---
 
 ## Level 1 - 기초 (1~2년차) | 25문제

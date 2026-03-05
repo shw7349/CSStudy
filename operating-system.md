@@ -40,6 +40,55 @@
 - **커널 모드(Kernel Mode)**: 모든 자원에 접근 가능한 특권 모드
 - **사용자 모드(User Mode)**: 제한된 권한으로 실행되는 일반 애플리케이션 모드
 
+### 🎯 시니어급 고급 용어
+
+#### CPU & 성능 최적화
+- **NUMA(Non-Uniform Memory Access)**: CPU마다 가까운 메모리와 먼 메모리가 있어 접근 속도가 다른 아키텍처
+- **CPU 캐시 일관성(Cache Coherence)**: 멀티코어 환경에서 각 CPU 캐시 간 데이터 일관성을 유지하는 메커니즘
+- **메모리 배리어(Memory Barrier)**: CPU가 명령어 재배치를 방지하여 메모리 순서를 보장하는 명령어
+- **False Sharing**: 여러 스레드가 같은 캐시 라인의 다른 변수를 수정하여 성능 저하가 발생하는 현상
+- **Copy-on-Write(COW)**: fork() 시 메모리를 복사하지 않고 쓰기 발생 시에만 복사하는 최적화 기법
+- **Zero-Copy**: 커널과 사용자 공간 간 데이터 복사를 최소화하여 I/O 성능을 향상시키는 기법
+
+#### 고급 동기화
+- **Spinlock**: 대기 중인 스레드가 CPU를 계속 사용하며 락을 폴링하는 동기화 기법 (짧은 대기 시간에 유리)
+- **RCU(Read-Copy-Update)**: 읽기 성능을 극대화한 동기화 기법. 업데이트 시 복사본을 만들어 수정
+- **Lock-free 알고리즘**: 락 없이 Compare-And-Swap(CAS) 같은 원자적 연산으로 동기화
+- **Wait-free 알고리즘**: 모든 스레드가 유한 시간 내에 작업을 완료하도록 보장하는 알고리즘
+- **우선순위 역전(Priority Inversion)**: 낮은 우선순위 프로세스가 락을 잡아 높은 우선순위가 대기하는 현상
+
+#### I/O & 비동기 처리
+- **epoll**: Linux의 고성능 I/O 이벤트 알림 메커니즘 (O(1) 복잡도)
+- **kqueue**: BSD 계열의 이벤트 알림 메커니즘
+- **IOCP(I/O Completion Port)**: Windows의 비동기 I/O 완료 알림 메커니즘
+- **AIO(Asynchronous I/O)**: 비동기 I/O 작업. 완료를 대기하지 않고 다른 작업 수행
+- **DMA(Direct Memory Access)**: CPU를 거치지 않고 메모리와 I/O 장치 간 직접 데이터 전송
+- **MMIO(Memory-Mapped I/O)**: I/O 장치를 메모리 주소 공간에 매핑하여 접근
+
+#### 컨테이너 & 가상화
+- **cgroup(Control Groups)**: 리소스 사용량을 제한하고 격리하는 Linux 커널 기능
+- **namespace**: 프로세스 격리를 위한 Linux 커널 기능 (PID, Network, Mount, User 등)
+- **Hypervisor**: 가상 머신을 생성하고 관리하는 소프트웨어 (Type 1: 하드웨어 직접, Type 2: OS 위)
+- **Paravirtualization**: 게스트 OS가 가상화를 인지하고 Hypervisor와 협력하는 방식
+
+#### 메모리 고급
+- **TLB(Translation Lookaside Buffer)**: 가상 주소-물리 주소 변환을 캐싱하는 하드웨어
+- **Huge Pages**: 일반 4KB보다 큰 페이지(2MB, 1GB)를 사용하여 TLB 미스를 줄이는 기법
+- **Memory Compaction**: 메모리 단편화를 줄이기 위해 페이지를 재배치하는 기법
+- **OOM Killer**: 메모리 부족 시 프로세스를 강제 종료하여 시스템을 보호하는 Linux 메커니즘
+- **Working Set**: 프로세스가 일정 시간 동안 참조하는 페이지 집합
+
+#### 파일 시스템 고급
+- **Journaling**: 파일 시스템 변경 사항을 로그에 기록하여 장애 시 복구를 보장 (ext4, XFS)
+- **Copy-on-Write 파일 시스템**: 수정 시 원본을 보존하고 새 블록에 쓰는 방식 (Btrfs, ZFS)
+- **inode**: 파일 메타데이터를 저장하는 자료구조 (권한, 크기, 타임스탬프, 블록 포인터)
+- **VFS(Virtual File System)**: 다양한 파일 시스템에 대한 통일된 인터페이스 제공
+
+#### 실시간 시스템
+- **Hard Real-Time**: 데드라인을 절대 놓치지 않아야 하는 시스템 (항공, 의료)
+- **Soft Real-Time**: 데드라인을 대부분 지키지만 가끔 놓쳐도 되는 시스템 (멀티미디어)
+- **Priority Ceiling**: 우선순위 역전을 방지하기 위해 락의 우선순위 상한을 설정
+
 ---
 
 ## Level 1 - 기초 (1~2년차) | 25문제

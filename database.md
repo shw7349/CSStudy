@@ -71,6 +71,105 @@
 - **데드락(Deadlock)**: 두 개 이상의 트랜잭션이 서로의 락을 기다리며 무한 대기
 - **격리 수준(Isolation Level)**: 트랜잭션 간 격리 정도 (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE)
 
+### 🎯 시니어급 고급 용어
+
+#### 트랜잭션 & 동시성 고급
+- **MVCC(Multi-Version Concurrency Control)**: 읽기/쓰기 충돌을 방지하기 위해 여러 버전의 데이터를 유지
+- **Snapshot Isolation**: 트랜잭션이 시작 시점의 스냅샷으로 일관된 읽기 수행
+- **Optimistic Locking**: 충돌이 드물다고 가정하고 커밋 시점에 검증 (버전 번호 사용)
+- **Pessimistic Locking**: 충돌 가능성이 높다고 가정하고 미리 락 획득
+- **Intention Lock**: 계층적 락 구조에서 하위 레벨 락 의도를 표시 (IX, IS)
+- **Gap Lock**: 범위 내 존재하지 않는 행에 대한 락 (Phantom Read 방지)
+- **Next-Key Lock**: 레코드 락 + Gap 락 조합 (InnoDB 기본)
+- **Two-Phase Locking(2PL)**: Growing Phase(락 획득만), Shrinking Phase(락 해제만) 두 단계로 구분
+- **Phantom Read**: 같은 쿼리를 두 번 실행했을 때 새로운 행이 나타나는 현상
+- **Dirty Read**: 커밋되지 않은 데이터를 읽는 현상
+- **Non-Repeatable Read**: 같은 행을 두 번 읽었을 때 값이 달라지는 현상
+
+#### 로그 & 복구
+- **WAL(Write-Ahead Logging)**: 데이터 변경 전에 로그를 먼저 기록하여 장애 복구 보장
+- **Redo Log**: 커밋된 트랜잭션을 재실행하여 복구
+- **Undo Log**: 커밋되지 않은 트랜잭션을 취소하여 롤백
+- **Checkpoint**: 메모리의 더티 페이지를 디스크에 기록하는 시점
+- **PITR(Point-In-Time Recovery)**: 특정 시점으로 데이터베이스 복구
+- **Binary Log(Binlog)**: 모든 변경 사항을 기록. 복제와 복구에 사용
+
+#### 쿼리 최적화
+- **Query Optimizer**: 쿼리의 최적 실행 계획을 선택하는 컴포넌트
+- **Cost-Based Optimizer(CBO)**: 통계 정보를 기반으로 비용 계산하여 최적 계획 선택
+- **Rule-Based Optimizer(RBO)**: 미리 정의된 규칙으로 실행 계획 선택
+- **Cardinality**: 특정 컬럼의 고유 값 개수. 인덱스 선택성 판단에 사용
+- **Selectivity**: 조건에 맞는 행의 비율. 낮을수록 인덱스가 효과적
+- **Index Selectivity**: 인덱스로 걸러낼 수 있는 데이터의 비율
+- **Covering Index**: 쿼리에 필요한 모든 컬럼을 포함하는 인덱스 (테이블 접근 불필요)
+- **Index Skip Scan**: 복합 인덱스의 선행 컬럼을 건너뛰고 검색
+- **Loose Index Scan**: 인덱스의 일부 값만 스캔 (GROUP BY 최적화)
+
+#### 인덱스 고급
+- **B+Tree**: B-Tree의 변형. 리프 노드에만 데이터 저장하고 연결 리스트로 연결
+- **LSM-Tree(Log-Structured Merge-Tree)**: 쓰기 최적화 인덱스. 메모리에서 정렬 후 디스크에 병합
+- **GiST(Generalized Search Tree)**: PostgreSQL의 확장 가능한 인덱스 구조
+- **GIN(Generalized Inverted Index)**: 배열, JSON, 전문 검색용 인덱스
+- **Bitmap Index**: 낮은 카디널리티 컬럼에 효과적 (성별, 상태 등)
+- **Partial Index**: 조건을 만족하는 행만 인덱싱하여 크기 절감
+- **Function-Based Index**: 함수 결과값에 대한 인덱스
+- **Composite Index**: 여러 컬럼을 조합한 인덱스 (컬럼 순서 중요)
+
+#### 분산 데이터베이스
+- **CAP Theorem**: Consistency, Availability, Partition Tolerance 중 2개만 선택 가능
+- **BASE**: Basically Available, Soft state, Eventually consistent (NoSQL 특성)
+- **Eventual Consistency**: 일정 시간 후 모든 노드가 동일한 데이터를 가짐
+- **Strong Consistency**: 모든 읽기가 최신 쓰기 결과를 반환
+- **Quorum**: 분산 시스템에서 합의를 위한 최소 노드 수 (R + W > N)
+- **Two-Phase Commit(2PC)**: 분산 트랜잭션 커밋 프로토콜 (Prepare → Commit)
+- **Paxos**: 분산 합의 알고리즘. 노드 간 값 합의
+- **Raft**: Paxos보다 이해하기 쉬운 합의 알고리즘 (Leader Election + Log Replication)
+- **Vector Clock**: 분산 시스템에서 이벤트 순서를 추적하는 메커니즘
+- **Consistent Hashing**: 노드 추가/제거 시 데이터 재분배를 최소화하는 해싱 기법
+
+#### 레플리케이션 & 샤딩
+- **Master-Slave Replication**: 마스터는 쓰기, 슬레이브는 읽기 담당
+- **Master-Master Replication**: 여러 마스터가 쓰기 가능. 충돌 해결 필요
+- **Synchronous Replication**: 모든 복제본에 쓰기 완료 후 커밋 (강한 일관성)
+- **Asynchronous Replication**: 마스터 쓰기 완료 즉시 커밋 (복제 지연 가능)
+- **Horizontal Sharding**: 행 단위로 데이터를 여러 DB에 분산
+- **Vertical Sharding**: 컬럼 단위로 데이터를 분할
+- **Hash-Based Sharding**: 해시 함수로 샤드 결정
+- **Range-Based Sharding**: 범위로 샤드 결정 (1~1000, 1001~2000 등)
+- **Resharding**: 샤드 재분배. 데이터 이동 필요
+
+#### NoSQL 고급
+- **Document Store**: JSON/BSON 형태로 저장 (MongoDB)
+- **Key-Value Store**: 키-값 쌍으로 저장 (Redis, DynamoDB)
+- **Column-Family Store**: 컬럼 단위로 저장 (Cassandra, HBase)
+- **Graph Database**: 노드와 엣지로 관계 저장 (Neo4j)
+- **Time-Series Database**: 시계열 데이터 최적화 (InfluxDB, TimescaleDB)
+- **Memtable**: LSM-Tree에서 메모리 기반 쓰기 버퍼
+- **SSTable(Sorted String Table)**: 디스크에 저장된 정렬된 키-값 파일
+- **Compaction**: LSM-Tree에서 SSTable을 병합하여 공간 회수
+
+#### 성능 & 모니터링
+- **Connection Pool**: DB 연결을 미리 생성하여 재사용
+- **Prepared Statement**: 쿼리를 미리 컴파일하여 재사용. SQL 인젝션 방지
+- **Query Cache**: 쿼리 결과를 캐싱 (MySQL 5.7 이하)
+- **Buffer Pool**: 자주 사용하는 데이터 페이지를 메모리에 캐싱
+- **Dirty Page**: 메모리에서 수정되었지만 디스크에 기록되지 않은 페이지
+- **Page Replacement**: 버퍼 풀이 가득 찰 때 페이지를 교체하는 알고리즘 (LRU)
+- **Slow Query Log**: 임계값보다 오래 걸린 쿼리 기록
+- **EXPLAIN**: 쿼리 실행 계획 분석 도구
+- **Table Statistics**: 테이블 크기, 카디널리티 등 통계 정보. Optimizer가 사용
+
+#### 뷰 & 고급 기능
+- **Materialized View**: 쿼리 결과를 물리적으로 저장. 주기적으로 갱신
+- **Trigger**: 특정 이벤트 발생 시 자동 실행되는 프로시저
+- **Foreign Key Constraint**: 참조 무결성 보장. CASCADE, SET NULL 옵션
+- **Check Constraint**: 컬럼 값의 유효성 검증
+- **Unique Constraint**: 중복 값 방지
+- **Sequence**: 자동 증가 값 생성 (Auto Increment)
+- **Cursor**: 쿼리 결과를 한 행씩 처리하는 메커니즘
+- **CTE(Common Table Expression)**: WITH 절로 임시 결과 집합 정의
+- **Window Function**: 그룹화 없이 집계 함수 사용 (ROW_NUMBER, RANK, LAG, LEAD)
+
 ---
 
 ## Level 1 - 기초 (1~2년차) | 30문제
