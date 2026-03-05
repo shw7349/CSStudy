@@ -4,6 +4,75 @@
 
 ---
 
+## 📖 주요 CS 용어 정리
+
+### 데이터베이스 기초
+- **DBMS(Database Management System)**: 데이터베이스를 관리하는 시스템 소프트웨어
+- **RDBMS(Relational DBMS)**: 관계형 데이터베이스 관리 시스템 (MySQL, PostgreSQL, Oracle 등)
+- **NoSQL**: 비관계형 데이터베이스 (MongoDB, Redis, Cassandra 등)
+- **스키마(Schema)**: 데이터베이스의 구조와 제약조건을 정의
+- **테이블(Table)**: 행과 열로 구성된 데이터 집합 (관계형 DB)
+- **레코드(Record)**: 테이블의 한 행. 하나의 데이터 항목
+- **필드(Field)**: 테이블의 열. 속성을 나타냄
+
+### 키(Key)
+- **기본키(Primary Key)**: 테이블에서 각 레코드를 고유하게 식별하는 키
+- **외래키(Foreign Key)**: 다른 테이블의 기본키를 참조하는 키
+- **후보키(Candidate Key)**: 기본키가 될 수 있는 속성들
+- **슈퍼키(Super Key)**: 레코드를 유일하게 식별할 수 있는 속성 집합
+- **복합키(Composite Key)**: 두 개 이상의 컬럼으로 구성된 키
+
+### 트랜잭션
+- **트랜잭션(Transaction)**: 데이터베이스 작업의 논리적 단위
+- **ACID**: 트랜잭션의 4가지 특성
+  - **Atomicity(원자성)**: 모두 성공 또는 모두 실패
+  - **Consistency(일관성)**: 트랜잭션 전후 DB는 일관된 상태 유지
+  - **Isolation(격리성)**: 동시 실행되는 트랜잭션들은 서로 영향 없음
+  - **Durability(지속성)**: 완료된 트랜잭션 결과는 영구적으로 반영
+- **커밋(Commit)**: 트랜잭션을 확정하여 DB에 반영
+- **롤백(Rollback)**: 트랜잭션을 취소하고 이전 상태로 복구
+
+### 정규화
+- **정규화(Normalization)**: 데이터 중복을 최소화하고 무결성을 보장하는 설계 기법
+- **1정규화(1NF)**: 원자값만 포함 (반복 그룹 제거)
+- **2정규화(2NF)**: 부분 함수 종속 제거
+- **3정규화(3NF)**: 이행 함수 종속 제거
+- **BCNF**: 모든 결정자가 후보키
+- **반정규화(Denormalization)**: 성능 향상을 위해 의도적으로 중복 허용
+
+### 인덱스
+- **인덱스(Index)**: 검색 속도를 높이기 위한 자료구조
+- **B-Tree 인덱스**: 균형 트리 구조. RDBMS에서 가장 많이 사용
+- **Hash 인덱스**: 해시 함수 기반. 등호(=) 검색에 빠름
+- **클러스터 인덱스(Clustered Index)**: 데이터가 물리적으로 정렬됨
+- **논클러스터 인덱스(Non-clustered Index)**: 별도의 인덱스 구조 유지
+
+### SQL 명령어
+- **DDL(Data Definition Language)**: 스키마 정의 (CREATE, ALTER, DROP)
+- **DML(Data Manipulation Language)**: 데이터 조작 (SELECT, INSERT, UPDATE, DELETE)
+- **DCL(Data Control Language)**: 권한 제어 (GRANT, REVOKE)
+- **TCL(Transaction Control Language)**: 트랜잭션 제어 (COMMIT, ROLLBACK)
+- **JOIN**: 두 개 이상의 테이블을 연결하여 조회
+- **뷰(View)**: 하나 이상의 테이블로부터 유도된 가상 테이블
+- **프로시저(Stored Procedure)**: DB에 저장된 SQL 프로그램
+
+### 성능 & 확장
+- **인덱스 스캔(Index Scan)**: 인덱스를 이용한 검색
+- **풀 테이블 스캔(Full Table Scan)**: 테이블 전체를 순차적으로 검색
+- **실행 계획(Execution Plan)**: 쿼리가 실행되는 방법을 보여주는 정보
+- **샤딩(Sharding)**: 데이터를 여러 DB에 수평 분할
+- **레플리케이션(Replication)**: 데이터를 여러 DB에 복제 (읽기 성능 향상)
+- **파티셔닝(Partitioning)**: 큰 테이블을 작은 단위로 분할
+
+### 동시성 제어
+- **락(Lock)**: 동시 접근을 제어하는 메커니즘
+- **공유 락(Shared Lock)**: 읽기 전용 락. 여러 트랜잭션이 동시에 획득 가능
+- **배타 락(Exclusive Lock)**: 쓰기 락. 하나의 트랜잭션만 획득 가능
+- **데드락(Deadlock)**: 두 개 이상의 트랜잭션이 서로의 락을 기다리며 무한 대기
+- **격리 수준(Isolation Level)**: 트랜잭션 간 격리 정도 (READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ, SERIALIZABLE)
+
+---
+
 ## Level 1 - 기초 (1~2년차) | 30문제
 
 ---
