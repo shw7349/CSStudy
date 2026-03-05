@@ -56,6 +56,28 @@
 - **Lock-free 알고리즘**: 락 없이 Compare-And-Swap(CAS) 같은 원자적 연산으로 동기화
 - **Wait-free 알고리즘**: 모든 스레드가 유한 시간 내에 작업을 완료하도록 보장하는 알고리즘
 - **우선순위 역전(Priority Inversion)**: 낮은 우선순위 프로세스가 락을 잡아 높은 우선순위가 대기하는 현상
+- **Reader-Writer Lock**: 읽기는 동시 허용, 쓰기는 배타적 접근만 허용하는 락
+- **Barrier Synchronization**: 여러 스레드가 특정 지점에서 모두 도달할 때까지 대기
+- **Live Lock**: 두 프로세스가 서로를 위해 양보하며 진행하지 못하는 상태 (데드락과 유사하지만 상태는 계속 변함)
+- **Starvation**: 특정 프로세스가 계속 우선순위에서 밀려 실행되지 못하는 현상
+
+##### 심화 동시성 문제
+- **Cache Stampede(Thundering Herd)**: 캐시 만료 시 동시에 대량의 요청이 DB로 몰려 부하 급증하는 현상
+  - **해결책**: 락 기반 재생성, 확률적 조기 만료, 백그라운드 갱신
+- **ABA Problem**: CAS 연산 시 A→B→A로 값이 변했다가 되돌아와 변경을 감지 못하는 문제
+  - **해결책**: Version Number, Tagged Pointer 사용
+- **Double-Checked Locking**: 성능 최적화를 위해 락 전후 두 번 체크 (싱글톤 패턴에서 자주 사용)
+  - **주의**: 메모리 재배치로 인한 문제 발생 가능 (volatile 필요)
+- **Memory Fence(Memory Barrier)**: 특정 지점 이전/이후의 메모리 연산 순서를 보장하는 명령어
+  - **종류**: Load Fence, Store Fence, Full Fence
+- **Happens-Before**: 멀티스레드에서 메모리 연산의 가시성 순서 관계 (Java Memory Model 핵심)
+- **Linearizability(선형화 가능성)**: 동시 연산이 순차적 실행처럼 보이도록 보장하는 일관성 모델 (가장 강한 일관성)
+- **Sequential Consistency**: 모든 스레드가 동일한 연산 순서를 관찰하는 일관성 모델
+- **Convoy Effect**: 짧은 임계 영역을 가진 프로세스들이 긴 임계 영역 뒤에서 대기하며 성능 저하
+- **Lock Contention**: 여러 스레드가 동일한 락을 획득하려고 경쟁하여 성능 저하
+- **False Sharing**: 여러 스레드가 같은 캐시 라인의 다른 변수를 수정하여 캐시 무효화 반복 (이미 CPU 섹션에 있지만 동기화와도 관련)
+- **Thundering Herd (일반)**: 여러 프로세스가 동일한 이벤트를 대기하다가 동시에 깨어나 리소스 경쟁
+  - **예시**: accept() 시스템 콜, epoll_wait()에서 발생 가능
 
 #### I/O & 비동기 처리
 - **epoll**: Linux의 고성능 I/O 이벤트 알림 메커니즘 (O(1) 복잡도)
@@ -77,6 +99,63 @@
 - **Memory Compaction**: 메모리 단편화를 줄이기 위해 페이지를 재배치하는 기법
 - **OOM Killer**: 메모리 부족 시 프로세스를 강제 종료하여 시스템을 보호하는 Linux 메커니즘
 - **Working Set**: 프로세스가 일정 시간 동안 참조하는 페이지 집합
+
+#### 가비지 컬렉션(GC)
+- **Garbage Collection(GC)**: 프로그램이 동적으로 할당한 메모리 중 더 이상 사용하지 않는 메모리를 자동으로 회수하는 메커니즘
+- **Stop-the-World(STW)**: GC 실행 동안 애플리케이션의 모든 스레드를 일시 중지하는 현상
+- **GC Roots**: GC가 추적을 시작하는 객체들 (스택의 로컬 변수, 정적 변수, JNI 참조 등)
+- **Reachability**: 객체가 GC Root로부터 참조 체인을 통해 도달 가능한지 여부
+
+##### GC 알고리즘
+- **Mark and Sweep**: 도달 가능한 객체를 마킹(Mark)하고, 마킹되지 않은 객체를 회수(Sweep)
+- **Mark and Compact**: Mark & Sweep 후 살아있는 객체를 메모리 한쪽으로 압축하여 단편화 해소
+- **Copying GC**: 메모리를 두 영역으로 나누고, 살아있는 객체를 다른 영역으로 복사한 후 원래 영역 전체 회수
+- **Reference Counting**: 객체의 참조 횟수를 추적하여 0이 되면 즉시 회수 (순환 참조 문제)
+- **Tri-color Marking**: 흰색(미방문), 회색(방문했지만 자식 미방문), 검은색(완전히 방문)으로 구분하여 마킹
+
+##### Generational GC
+- **Generational Hypothesis**: 대부분의 객체는 생성 직후 죽는다는 가설
+- **Young Generation**: 새로 생성된 객체가 할당되는 영역 (Minor GC 발생)
+- **Old Generation(Tenured)**: Young에서 오래 살아남은 객체가 이동하는 영역 (Major GC 발생)
+- **Eden Space**: Young Generation 내에서 객체가 최초 할당되는 공간
+- **Survivor Space**: Eden에서 GC 후 살아남은 객체가 이동하는 공간 (S0, S1 두 개 존재)
+- **Minor GC**: Young Generation에서 발생하는 GC (빠르고 빈번함)
+- **Major GC(Full GC)**: Old Generation을 포함한 전체 힙 GC (느리고 STW 시간 김)
+- **Promotion(Tenuring)**: 객체가 Young에서 Old로 이동하는 과정
+- **Premature Promotion**: 젊은 객체가 너무 빨리 Old로 승격되어 Major GC 빈도가 증가하는 현상
+
+##### 고급 GC 기법
+- **Concurrent GC**: 애플리케이션 스레드와 GC 스레드가 동시에 실행 (STW 시간 최소화)
+- **Incremental GC**: GC 작업을 여러 단계로 나누어 수행하여 일시 중지 시간 분산
+- **Parallel GC**: 여러 스레드가 동시에 GC 수행 (처리량 향상)
+- **Card Table**: Old → Young 참조를 효율적으로 추적하기 위한 자료구조
+- **Remembered Set**: 특정 영역을 참조하는 외부 포인터를 기록하는 자료구조
+- **Write Barrier**: 객체 참조 변경 시 GC가 이를 추적할 수 있도록 삽입된 코드
+- **Safe Point**: GC가 안전하게 실행될 수 있는 프로그램 지점 (메서드 호출, 루프 백엣지 등)
+
+##### 주요 GC 구현체 (JVM 기준)
+- **Serial GC**: 단일 스레드로 동작. 작은 힙과 단일 CPU 환경에 적합
+- **Parallel GC(Throughput GC)**: 여러 스레드로 병렬 수행. 처리량 최대화
+- **CMS(Concurrent Mark Sweep)**: 애플리케이션과 동시 실행. 낮은 지연 시간 (Java 14에서 deprecated)
+- **G1 GC(Garbage First)**: 힙을 리전으로 나누고 가비지가 많은 리전부터 회수. 예측 가능한 STW 시간
+- **ZGC**: 매우 큰 힙(TB급)에서도 10ms 이하 STW 보장. Colored Pointers 사용
+- **Shenandoah**: Red Hat이 개발한 초저지연 GC. G1과 유사하지만 더 낮은 지연 시간
+
+##### GC 튜닝 & 모니터링
+- **GC Overhead**: 전체 실행 시간 중 GC에 소요된 시간 비율
+- **Heap Sizing**: Young/Old 비율, 전체 힙 크기 조정 (-Xms, -Xmx, -XX:NewRatio)
+- **GC Log Analysis**: GC 로그를 분석하여 병목 지점 파악
+- **Memory Leak**: GC로 회수되지 않고 계속 누적되는 메모리
+- **Metaspace**: 클래스 메타데이터를 저장하는 네이티브 메모리 영역 (Java 8+, PermGen 대체)
+- **Weak/Soft/Phantom Reference**: 다양한 강도의 참조 타입. 캐시나 리소스 관리에 사용
+- **Finalization**: 객체가 회수되기 전 `finalize()` 메서드 호출 (성능 문제로 비권장)
+
+##### 다른 언어의 GC
+- **Python**: Reference Counting + Cycle Detector (순환 참조 감지)
+- **Go**: Concurrent Mark & Sweep. 매우 짧은 STW 시간(<1ms) 목표
+- **JavaScript(V8)**: Generational GC (Scavenger + Mark-Compact)
+- **Rust**: 소유권 시스템으로 GC 없이 메모리 안전성 보장
+- **C#(.NET)**: Generational GC with Server/Workstation 모드
 
 #### 파일 시스템 고급
 - **Journaling**: 파일 시스템 변경 사항을 로그에 기록하여 장애 시 복구를 보장 (ext4, XFS)

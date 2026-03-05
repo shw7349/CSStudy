@@ -159,6 +159,29 @@
 - **EXPLAIN**: 쿼리 실행 계획 분석 도구
 - **Table Statistics**: 테이블 크기, 카디널리티 등 통계 정보. Optimizer가 사용
 
+##### 캐시 전략 & 심화 문제
+- **Cache-Aside(Lazy Loading)**: 애플리케이션이 캐시 확인 → 미스 시 DB 조회 → 캐시에 저장
+- **Write-Through**: DB 쓰기와 동시에 캐시 업데이트 (일관성 높지만 느림)
+- **Write-Behind(Write-Back)**: 캐시에만 쓰고 비동기로 DB에 반영 (빠르지만 데이터 손실 가능)
+- **Read-Through**: 캐시가 DB를 직접 조회하여 데이터 로드 (Cache-Aside와 유사하지만 캐시가 주도)
+- **Refresh-Ahead**: 만료 전에 미리 캐시를 갱신하여 Cache Miss 방지
+
+##### 캐시 문제 패턴
+- **Cache Stampede(캐시 스탬피드)**: 인기 캐시 키가 만료되면 동시 다발적으로 DB 조회 발생하여 부하 급증
+  - **해결책**:
+    - **Mutex/Lock**: 첫 요청만 DB 조회, 나머지는 대기
+    - **Probabilistic Early Expiration**: 만료 시간 전에 확률적으로 미리 갱신
+    - **Background Refresh**: 백그라운드에서 주기적으로 캐시 갱신
+    - **Stale-While-Revalidate**: 만료된 캐시를 반환하면서 백그라운드에서 갱신
+- **Cache Penetration(캐시 관통)**: 존재하지 않는 데이터를 반복 조회하여 매번 DB까지 접근
+  - **해결책**: Null 값 캐싱, Bloom Filter 사용
+- **Cache Avalanche(캐시 눈사태)**: 대량의 캐시가 동시에 만료되어 DB 부하 폭증
+  - **해결책**: TTL에 랜덤 값 추가, 계층적 캐시, 영구 캐시 + 백그라운드 갱신
+- **Hot Key Problem(핫키 문제)**: 특정 키에 트래픽 집중되어 단일 캐시 노드 과부하
+  - **해결책**: 로컬 캐시, 키 복제(Replication), 샤딩
+- **Big Key Problem**: 단일 키의 데이터가 너무 커서 성능 문제 발생
+  - **해결책**: 데이터 분할, 압축, TTL 단축
+
 #### 뷰 & 고급 기능
 - **Materialized View**: 쿼리 결과를 물리적으로 저장. 주기적으로 갱신
 - **Trigger**: 특정 이벤트 발생 시 자동 실행되는 프로시저

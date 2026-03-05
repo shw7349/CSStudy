@@ -118,6 +118,12 @@
 - **Direct Server Return(DSR)**: 응답을 로드 밸런서를 거치지 않고 클라이언트에 직접 전송
 - **Health Check**: 백엔드 서버의 상태를 주기적으로 확인하여 장애 서버 제외
 - **Graceful Degradation**: 네트워크 장애 시 서비스 수준을 단계적으로 낮춤
+- **Circuit Breaker**: 장애 서비스 호출을 차단하여 연쇄 장애 방지
+- **Bulkhead Pattern**: 리소스를 격리하여 한 영역의 장애가 전체로 확산되지 않도록 방지
+- **Retry with Backoff**: 실패 시 지수 백오프로 재시도하여 부하 분산
+- **Rate Limiting**: 요청 속도를 제한하여 서버 과부하 방지 (Token Bucket, Leaky Bucket)
+- **Idempotency**: 동일한 요청을 여러 번 수행해도 결과가 같도록 보장 (네트워크 재시도 안전성)
+- **Request Coalescing**: 동일한 요청을 하나로 합쳐서 백엔드 부하 감소
 
 ---
 
