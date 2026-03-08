@@ -15,6 +15,7 @@
 | [🌐 네트워크](./network.md) | 100문제 | TCP/IP, HTTP, DNS, 보안, 프로토콜 등 |
 | [🗄️ 데이터베이스](./database.md) | 120문제 | SQL, 인덱스, 트랜잭션, NoSQL, 최적화 등 |
 | [🛠️ 소프트웨어 공학](./software-engineering.md) | 120문제 | 설계패턴, 아키텍처, 테스트, DevOps 등 |
+| [☕ Java](./JAVA.md) | 100문제 | JVM, OOP, 동시성, GC, 성능 튜닝 등 |
 | [🎯 **면접 암기 노트**](./memorization.md) | **핵심 정리** | **DB & OS 중심 면접 필수 암기 사항** |
 
 ---
